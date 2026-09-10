@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>红盘实验室</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  :root{
+    --bg: #F5F1E7;
+    --surface: #FFFFFF;
+    --surface-2: #EDE6D3;
+    --ink: #221D14;
+    --ink-dim: #756B58;
+    --border: #DED2B4;
+    --accent: #1F5C54;
+    --gain: #B4302A;
+    --gain-soft: #B4302A1a;
+    --loss: #2F7A4F;
+    --loss-soft: #2F7A4F1a;
+    --warn-bg: #F4E3C4;
+    --warn-border: #D8B876;
+    --warn-ink: #6B4E15;
+    --shadow: 0 1px 2px rgba(34,29,20,0.06), 0 8px 24px -12px rgba(34,29,20,0.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg: #15130E;
+      --surface: #1E1B14;
+      --surface-2: #262112;
+      --ink: #EDE6D6;
+      --ink-dim: #A79A80;
+      --border: #372F1D;
+      --accent: #3FA294;
+      --gain: #E2604A;
+      --gain-soft: #E2604A26;
+      --loss: #59B885;
+      --loss-soft: #59B88526;
+      --warn-bg: #3A2E13;
+      --warn-border: #6B5324;
+      --warn-ink: #E8C983;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; background: var(--bg); }
+  body{
+    color: var(--ink);
+    font-family: "Noto Sans SC", "Segoe UI", sans-serif;
+    line-height: 1.5;
+  }
+  .wrap{ max-width: 1120px; margin: 0 auto; padding: 20px 20px 56px; }
+  h1,h2,h3{ font-family: "Noto Serif SC", "Songti SC", serif; margin: 0; text-wrap: balance; }
+  .mono{ font-family: "JetBrains Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+
+  header.top{
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 18px 0 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap;
+  }
+  .brand{ display: flex; align-items: baseline; gap: 10px; }
+  .brand .seal{
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; border-radius: 6px; background: var(--gain); color: #fff;
+    font-family: "Noto Serif SC", serif; font-weight: 700; font-size: 15px; letter-spacing: -1px; flex: none;
+  }
+  .brand h1{ font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+  .brand .sub{ color: var(--ink-dim); font-size: 12.5px; }
+  .clockbox{ text-align: right; }
+  .clockbox .time{ font-size: 20px; font-weight: 500; }
+  .clockbox .date{ color: var(--ink-dim); font-size: 12px; }
+
+  .pill{
+    display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: 999px;
+    font-size: 12.5px; font-weight: 500; border: 1px solid var(--border); background: var(--surface-2);
+    color: var(--ink-dim); white-space: nowrap;
+  }
+  .pill .dot{ width: 7px; height: 7px; border-radius: 50%; background: var(--ink-dim); flex: none; }
+  .pill.live{ background: var(--gain-soft); border-color: color-mix(in srgb, var(--gain) 45%, var(--border)); color: var(--gain); }
+  .pill.live .dot{ background: var(--gain); box-shadow: 0 0 0 3px var(--gain-soft); }
+  .pill.closed{ background: var(--surface-2); color: var(--ink-dim); }
+  .pill.closed .dot{ background: var(--ink-dim); }
+  .statusrow{ display:flex; align-items:center; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+
+  .disclaimer{
+    margin-top: 18px; display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px;
+    border-radius: 10px; background: var(--warn-bg); border: 1px solid var(--warn-border);
+    color: var(--warn-ink); font-size: 13px;
+  }
+  .disclaimer b{ font-weight: 700; }
+
+  .stats{ margin-top: 18px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 780px){ .stats{ grid-template-columns: repeat(2, 1fr); } }
+  .stat{ background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; box-shadow: var(--shadow); }
+  .stat .lbl{ font-size: 11.5px; color: var(--ink-dim); letter-spacing: 0.3px; }
+  .stat .val{ font-size: 24px; font-weight: 700; margin-top: 5px; }
+  .stat .sub{ font-size: 11.5px; color: var(--ink-dim); margin-top: 3px; }
+
+  .watchlist{ margin-top: 18px; padding: 18px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); }
+  .watchlist h2{ font-size: 15px; color: var(--ink-dim); font-weight: 500; margin-bottom: 4px; }
+  .watchlist h2 .accent{ color: var(--accent); font-family: "Noto Serif SC", serif; font-weight: 700; font-size: 17px; }
+  .watchlist .sub{ font-size: 12px; color: var(--ink-dim); margin-bottom: 12px; }
+  .wl-grid{ display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+  .wl-card{ background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 11px 13px; }
+  .wl-top{ display:flex; justify-content: space-between; align-items:baseline; gap: 8px; }
+  .wl-name{ font-weight: 600; font-size: 13.5px; }
+  .wl-code{ color: var(--ink-dim); font-size: 11px; }
+  .wl-weight{ font-size: 12px; color: var(--accent); font-weight: 700; white-space: nowrap; }
+  .wl-price{ font-size: 11.5px; color: var(--ink-dim); margin-top: 4px; }
+  .wl-rationale{ font-size: 12.5px; margin-top: 6px; color: var(--ink); }
+  .wl-empty{ font-size: 13px; color: var(--ink-dim); }
+
+  .grid{ margin-top: 18px; display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; }
+  @media (max-width: 780px){ .grid{ grid-template-columns: 1fr; } }
+  .card{ background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; box-shadow: var(--shadow); }
+  .card h2{ font-size: 15px; color: var(--ink-dim); font-weight: 500; letter-spacing: 0.3px; }
+  .card h2 .accent{ color: var(--accent); font-family: "Noto Serif SC", serif; font-weight: 700; font-size: 17px; }
+  .card h2 .count{ color: var(--ink-dim); font-weight: 400; font-size: 13px; }
+
+  .pos-empty{ display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 34px 10px 22px; gap: 10px; color: var(--ink-dim); }
+  .pos-empty .big{ font-size: 30px; }
+  .pos-empty .countdown{ margin-top: 4px; font-family: "JetBrains Mono", monospace; font-size: 20px; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  .poslist{ display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
+  .poscard{ background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+  .pos-head{ display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .pos-name{ font-size: 17px; font-weight: 700; font-family: "Noto Serif SC", serif; }
+  .pos-code{ color: var(--ink-dim); font-size: 12px; margin-top: 1px; }
+  .badge{ padding: 3px 10px; border-radius: 999px; font-size: 12.5px; font-weight: 700; white-space: nowrap; }
+  .badge.gain{ background: var(--gain-soft); color: var(--gain); }
+  .badge.loss{ background: var(--loss-soft); color: var(--loss); }
+  .badge.flat{ background: var(--surface); color: var(--ink-dim); }
+
+  .price-tiles{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
+  .tile{ background: var(--surface); border: 1px solid var(--border); border-radius: 9px; padding: 9px 10px; }
+  .tile .lbl{ font-size: 10.5px; color: var(--ink-dim); }
+  .tile .val{ font-size: 15px; margin-top: 3px; font-weight: 500; }
+
+  .rationale{ margin-top: 12px; padding: 10px 12px; background: var(--surface); border-radius: 9px; font-size: 13px; color: var(--ink); border-left: 3px solid var(--accent); }
+  .rationale .lbl{ font-size: 11px; color: var(--ink-dim); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .factor-tag{ display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; font-size: 11.5px; color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); padding: 3px 9px; border-radius: 999px; }
+
+  .meta-row{ display:flex; gap: 14px; margin-top: 10px; flex-wrap: wrap; font-size: 12px; color: var(--ink-dim); }
+  .meta-row b{ color: var(--ink); font-weight: 500; }
+  .t1-note{ margin-top: 10px; display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--warn-ink); background: var(--warn-bg); border: 1px solid var(--warn-border); padding: 6px 10px; border-radius: 8px; }
+
+  .cash-row{ margin-top: 12px; display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--surface-2); border: 1px dashed var(--border); border-radius: 10px; font-size: 13px; color: var(--ink-dim); }
+  .cash-row b{ color: var(--ink); font-family: "JetBrains Mono", monospace; }
+
+  .hist-row{ padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .hist-row:last-child{ border-bottom: none; }
+  .hist-top{ display:flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .hist-name{ font-weight: 500; font-size: 14px; }
+  .hist-code{ color: var(--ink-dim); font-size: 11.5px; }
+  .hist-dates{ color: var(--ink-dim); font-size: 11.5px; margin-top: 2px; }
+  .hist-empty{ color: var(--ink-dim); font-size: 13.5px; padding: 10px 0; }
+  .hist-list{ max-height: 640px; overflow-y: auto; }
+
+  .strategy{ margin-top: 18px; display: grid; grid-template-columns: auto 1fr; gap: 20px; padding: 16px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); align-items: center; }
+  @media (max-width: 640px){ .strategy{ grid-template-columns: 1fr; } }
+  .strategy .figs{ display: flex; gap: 22px; flex-wrap: wrap; }
+  .strategy .fig .lbl{ font-size: 11px; color: var(--ink-dim); }
+  .strategy .fig .val{ font-size: 20px; font-weight: 700; margin-top: 2px; }
+  .strategy .notes-head{ display:flex; align-items:baseline; gap: 8px; margin-bottom: 6px; }
+  .strategy .notes-head h2{ font-size: 13.5px; color: var(--ink-dim); font-weight: 500; }
+  .strategy .notes-head .accent{ color: var(--accent); font-family: "Noto Serif SC", serif; font-weight: 700; font-size: 15px; }
+  .strategy ul{ margin: 0; padding-left: 18px; font-size: 13px; color: var(--ink); }
+  .strategy li{ margin-bottom: 3px; }
+  .strategy .empty{ font-size: 13px; color: var(--ink-dim); }
+  .strategy .reviewed{ font-size: 11px; color: var(--ink-dim); margin-top: 8px; }
+
+  .rules{ margin-top: 18px; padding: 18px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); }
+  .rules h2{ font-size: 15px; color: var(--ink-dim); font-weight: 500; margin-bottom: 10px; }
+  .rules ol{ margin: 0; padding-left: 20px; font-size: 13.5px; color: var(--ink); }
+  .rules li{ margin-bottom: 6px; }
+  .rules .foot{ margin-top: 12px; font-size: 12px; color: var(--ink-dim); border-top: 1px solid var(--border); padding-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <span class="seal">盘</span>
+      <div>
+        <h1>红盘实验室</h1>
+        <div class="sub">A 股模拟观测 · 每个交易日 14:00 候选 / 14:30 调仓</div>
+      </div>
+    </div>
+    <div class="clockbox">
+      <div class="time mono" id="bjTime">--:--:--</div>
+      <div class="date" id="bjDate">北京时间加载中</div>
+    </div>
+  </header>
+
+  <div class="statusrow">
+    <span class="pill" id="marketPill"><span class="dot"></span><span id="marketLabel">读取行情状态中…</span></span>
+    <span class="pill" id="pickPill"><span class="dot"></span><span id="pickLabel">—</span></span>
+  </div>
+
+  <div class="disclaimer">
+    <span style="font-size:16px; line-height:1;">⚠</span>
+    <div><b>纸上模拟，非真实交易。</b> 本站所有买卖均为虚拟记录（模拟本金 ¥100,000），用于展示多因子选股与仓位管理思路，<b>不构成任何投资建议</b>，历史表现不代表未来收益。请勿依据本站内容进行真实交易决策。</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="lbl">累计收益率</div><div class="val mono" id="statReturn">—</div><div class="sub" id="statReturnSub">模拟本金 ¥100,000</div></div>
+    <div class="stat"><div class="lbl">已实现盈亏</div><div class="val mono" id="statRealized">—</div><div class="sub">历史平仓累计</div></div>
+    <div class="stat"><div class="lbl">浮动盈亏</div><div class="val mono" id="statUnrealized">—</div><div class="sub">当前持仓未平仓</div></div>
+    <div class="stat"><div class="lbl">现金仓位</div><div class="val mono" id="statCash">—</div><div class="sub" id="statCashSub">未投入资金占比</div></div>
+  </div>
+
+  <div class="watchlist" id="watchlistCard">
+    <h2><span class="accent">14:00 候选观察</span></h2>
+    <div class="sub">每个交易日14:00列出的候选股票，14:30 会结合这之后30分钟的涨跌幅决定全部买入、部分买入或放弃——最终结果以下方"当前持仓"为准。</div>
+    <div id="wlBody"><div class="wl-empty">尚无今日候选记录。</div></div>
+  </div>
+
+  <div class="strategy" id="strategyCard">
+    <div class="figs">
+      <div class="fig"><div class="lbl">历史胜率</div><div class="val mono" id="stratWinRate">—</div></div>
+      <div class="fig"><div class="lbl">平均单笔收益率</div><div class="val mono" id="stratAvgPnl">—</div></div>
+      <div class="fig"><div class="lbl">已完成交易</div><div class="val mono" id="stratTrades">—</div></div>
+    </div>
+    <div>
+      <div class="notes-head"><h2><span class="accent">策略自我复盘</span> · AI 根据历史表现逐步调整选股倾向</h2></div>
+      <div id="stratNotes"><div class="empty">尚无复盘记录，等待首次调仓完成后自动生成。</div></div>
+      <div class="reviewed" id="stratReviewed"></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card" id="posCard">
+      <h2><span class="accent">当前持仓</span> <span class="count" id="posCount"></span></h2>
+      <div id="posBody"><div class="pos-empty"><div class="big">🈳</div><div>暂无持仓 · 空仓观望</div></div></div>
+    </div>
+    <div class="card">
+      <h2><span class="accent">复盘历史</span></h2>
+      <div class="hist-list" id="histBody"><div class="hist-empty">尚无历史记录，等待首次选股完成。</div></div>
+    </div>
+  </div>
+
+  <div class="rules">
+    <h2>运行说明</h2>
+    <ol>
+      <li>每个 A 股交易日 <b>14:00（北京时间）</b>，后台任务列出当天候选股票；<b>14:30</b> 结合这之后30分钟的涨跌幅，自主决定全部买入、部分买入或放弃，并处理已有持仓的卖出判断。</li>
+      <li>决策综合技术面因子（涨跌幅、量能、走势）与<b>公开可查的机构持仓线索</b>（个股定期报告披露的十大流通股东中出现的量化私募/知名机构，作为参考信号之一）。</li>
+      <li>AI 可以同时持有<b>多只股票</b>，也可以选择<b>部分或全部空仓</b>；每只股票的仓位比例由 AI 自行把控。买入的股票需遵守 <b>T+1</b> 规则。</li>
+      <li>每笔平仓交易都会扣除模拟的交易成本（参考华泰证券零售电子渠道典型费率估算：佣金双向万2.5、单笔最低¥5，印花税卖出单向千0.5，过户费双向万0.1；实际账户费率可协商，可能更低），历史记录里的盈亏都是<b>扣除成本后的净值</b>。</li>
+      <li>页面顶部的"累计收益率"= （历史已实现净盈亏 + 当前浮动盈亏）÷ 模拟本金，所有价格与盈亏均为模拟计算，不涉及真实资金、不对接真实券商账户。数据每次运行后通过 GitHub 更新，本页面每分钟自动刷新一次。</li>
+    </ol>
+    <div class="foot" id="heartbeatFoot">最后更新：暂无数据。行情数据来源：公开免费行情接口（新浪/东方财富等），可能存在延迟或中断；机构持仓线索来自季度定期报告等公开披露，存在滞后。</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var CAPITAL = 100000;
+
+  function bjParts(d){
+    d = d || new Date();
+    var fmt = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Shanghai', hour12: false,
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit', weekday: 'short'
+    });
+    var parts = {};
+    fmt.formatToParts(d).forEach(function(p){ parts[p.type] = p.value; });
+    var wdMap = {Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+    return {
+      year: +parts.year, month: +parts.month, day: +parts.day,
+      hour: +parts.hour, minute: +parts.minute, second: +parts.second,
+      weekday: wdMap[parts.weekday],
+      minutesOfDay: (+parts.hour) * 60 + (+parts.minute)
+    };
+  }
+  function pad(n){ return String(n).padStart(2,'0'); }
+
+  function marketStatus(p){
+    var isWeekday = p.weekday >= 1 && p.weekday <= 5;
+    var m = p.minutesOfDay;
+    if (!isWeekday) return {label: '周末休市', live: false};
+    if (m < 9*60+15) return {label: '盘前', live: false};
+    if (m < 9*60+30) return {label: '集合竞价', live: false};
+    if (m <= 11*60+30) return {label: '早盘交易中', live: true};
+    if (m < 13*60) return {label: '午间休市', live: false};
+    if (m <= 15*60) return {label: '午盘交易中', live: true};
+    return {label: '已收盘', live: false};
+  }
+
+  function nextPick(p, now){
+    var daysAhead = 0;
+    var isWeekday = p.weekday >= 1 && p.weekday <= 5;
+    if (isWeekday && p.minutesOfDay < 14*60+30) {
+      daysAhead = 0;
+    } else {
+      daysAhead = 1;
+      var wd = (p.weekday + 1) % 7;
+      while (wd === 0 || wd === 6) { daysAhead++; wd = (wd + 1) % 7; }
+    }
+    var approx = now.getTime() + daysAhead*86400000;
+    var approxDate = new Date(approx);
+    var bp = bjParts(approxDate);
+    var targetMinUTCms = approx - (bp.minutesOfDay - (14*60+30)) * 60000 - bp.second*1000;
+    return new Date(targetMinUTCms);
+  }
+
+  function tickClock(){
+    var now = new Date();
+    var p = bjParts(now);
+    document.getElementById('bjTime').textContent = pad(p.hour)+':'+pad(p.minute)+':'+pad(p.second);
+    var wdNames = ['周日','周一','周二','周三','周四','周五','周六'];
+    document.getElementById('bjDate').textContent = p.year+'-'+pad(p.month)+'-'+pad(p.day)+' '+wdNames[p.weekday]+' · 北京时间';
+
+    var ms = marketStatus(p);
+    var pill = document.getElementById('marketPill');
+    pill.className = 'pill ' + (ms.live ? 'live' : 'closed');
+    document.getElementById('marketLabel').textContent = ms.label;
+
+    var nt = nextPick(p, now);
+    var diff = Math.max(0, nt.getTime() - now.getTime());
+    var h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+    var pickPill = document.getElementById('pickPill');
+    var isWeekday = p.weekday>=1 && p.weekday<=5;
+    var atPickWindow = isWeekday && p.minutesOfDay >= 14*60+29 && p.minutesOfDay <= 14*60+31;
+    pickPill.className = 'pill' + (atPickWindow ? ' live' : '');
+    document.getElementById('pickLabel').textContent = '距下次 14:30 调仓 ' + pad(h)+':'+pad(m)+':'+pad(s);
+
+    var countdownEl = document.querySelector('.pos-empty .countdown');
+    if (countdownEl) countdownEl.textContent = pad(h)+':'+pad(m)+':'+pad(s);
+  }
+  setInterval(tickClock, 1000);
+  tickClock();
+
+  function fmtMoney(n){
+    if (typeof n !== 'number' || isNaN(n)) return '—';
+    return (n<0?'-':'') + '¥' + Math.abs(n).toFixed(2);
+  }
+  function fmtPct(n){
+    if (typeof n !== 'number' || isNaN(n)) return '—';
+    return (n>=0?'+':'') + n.toFixed(2) + '%';
+  }
+  function pnlClass(n){
+    if (typeof n !== 'number' || isNaN(n)) return 'flat';
+    if (n > 0) return 'gain';
+    if (n < 0) return 'loss';
+    return 'flat';
+  }
+  function escapeHtml(s){
+    var div = document.createElement('div');
+    div.textContent = s;
+    return div.innerHTML;
+  }
+
+  function computeAndRenderStats(positions, history){
+    var realizedPnlCNY = 0;
+    history.forEach(function(d){ if (typeof d.pnlCNY === 'number') realizedPnlCNY += d.pnlCNY; });
+    var unrealizedPnlCNY = 0;
+    var usedWeight = 0;
+    positions.forEach(function(p){
+      usedWeight += (p.weightPct || 0);
+      if (typeof p.costCNY === 'number' && typeof p.lastPrice === 'number' && typeof p.buyPrice === 'number' && p.buyPrice) {
+        unrealizedPnlCNY += p.costCNY * (p.lastPrice - p.buyPrice) / p.buyPrice;
+      }
+    });
+    var cashPct = Math.max(0, 100 - usedWeight);
+    var cumPct = (realizedPnlCNY + unrealizedPnlCNY) / CAPITAL * 100;
+
+    var elReturn = document.getElementById('statReturn');
+    elReturn.textContent = fmtPct(cumPct);
+    elReturn.style.color = cumPct > 0 ? 'var(--gain)' : (cumPct < 0 ? 'var(--loss)' : 'var(--ink)');
+
+    var elRealized = document.getElementById('statRealized');
+    elRealized.textContent = fmtMoney(realizedPnlCNY);
+    elRealized.style.color = realizedPnlCNY > 0 ? 'var(--gain)' : (realizedPnlCNY < 0 ? 'var(--loss)' : 'var(--ink)');
+
+    var elUnrealized = document.getElementById('statUnrealized');
+    elUnrealized.textContent = fmtMoney(unrealizedPnlCNY);
+    elUnrealized.style.color = unrealizedPnlCNY > 0 ? 'var(--gain)' : (unrealizedPnlCNY < 0 ? 'var(--loss)' : 'var(--ink)');
+
+    document.getElementById('statCash').textContent = cashPct.toFixed(1) + '%';
+    document.getElementById('statCashSub').textContent = fmtMoney(CAPITAL * cashPct/100) + ' 未投入';
+  }
+
+  function renderPositions(positions){
+    var body = document.getElementById('posBody');
+    var countEl = document.getElementById('posCount');
+    countEl.textContent = positions.length ? ('(' + positions.length + ' 只)') : '';
+
+    if (!positions.length) {
+      body.innerHTML =
+        '<div class="pos-empty">' +
+          '<div class="big">🈳</div>' +
+          '<div>暂无持仓 · 空仓观望</div>' +
+          '<div style="font-size:12px;">下一次自动调仓倒计时</div>' +
+          '<div class="countdown mono">--:--:--</div>' +
+        '</div>';
+      return;
+    }
+
+    var today = bjParts(new Date());
+    var todayStr = today.year+'-'+pad(today.month)+'-'+pad(today.day);
+    var usedWeight = 0;
+
+    var html = '<div class="poslist">';
+    positions.forEach(function(pos){
+      usedWeight += (pos.weightPct || 0);
+      var pnlPct = (typeof pos.lastPrice === 'number' && typeof pos.buyPrice === 'number' && pos.buyPrice)
+        ? (pos.lastPrice - pos.buyPrice) / pos.buyPrice * 100 : null;
+      var pnlAmt = (pnlPct !== null && typeof pos.costCNY === 'number') ? pos.costCNY * pnlPct / 100 : null;
+      var cls = pnlClass(pnlPct);
+      var buyDay = pos.buyDate || '';
+      var canSellToday = buyDay && buyDay < todayStr;
+
+      html += '<div class="poscard">';
+      html +=   '<div class="pos-head">';
+      html +=     '<div><div class="pos-name">'+ escapeHtml(pos.name||'未知') +'</div><div class="pos-code mono">'+ escapeHtml(pos.symbol||'') +' · 仓位 '+ (pos.weightPct!=null? pos.weightPct.toFixed(1):'—') +'%</div></div>';
+      html +=     '<span class="badge '+cls+'">'+ (pnlPct!==null ? fmtPct(pnlPct) : '待更新') +'</span>';
+      html +=   '</div>';
+
+      html +=   '<div class="price-tiles">';
+      html +=     '<div class="tile"><div class="lbl">买入价</div><div class="val mono">'+ fmtMoney(pos.buyPrice) +'</div></div>';
+      html +=     '<div class="tile"><div class="lbl">最新价</div><div class="val mono">'+ fmtMoney(pos.lastPrice) +'</div></div>';
+      html +=     '<div class="tile"><div class="lbl">模拟盈亏</div><div class="val mono" style="color:var(--'+ (cls==='flat'?'ink':cls) +')">'+ (pnlAmt!==null ? (pnlAmt>=0?'+':'') + fmtMoney(pnlAmt) : '—') +'</div></div>';
+      html +=     '<div class="tile"><div class="lbl">持仓天数</div><div class="val mono">'+ (pos.holdDays!=null? pos.holdDays : '—') +'</div></div>';
+      html +=   '</div>';
+
+      if (pos.rationale) html += '<div class="rationale"><div class="lbl">选股理由</div>' + escapeHtml(pos.rationale) + '</div>';
+      if (pos.factorNote) html += '<div class="factor-tag">◆ ' + escapeHtml(pos.factorNote) + '</div>';
+
+      html +=   '<div class="meta-row"><span>买入时间 <b>'+ (pos.buyDate||'—') +' ' + (pos.buyTime||'') +'</b></span></div>';
+
+      if (!canSellToday) html += '<div class="t1-note">🔒 T+1 限制：今日买入，最早下一交易日方可卖出</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+
+    var cashPct = Math.max(0, 100 - usedWeight);
+    html += '<div class="cash-row"><span>现金 / 未分配仓位</span><b>'+ cashPct.toFixed(1) +'%</b></div>';
+    body.innerHTML = html;
+  }
+
+  function renderHistory(history){
+    var body = document.getElementById('histBody');
+    var docs = history.slice().sort(function(a,b){ return (b.sellDate||'').localeCompare(a.sellDate||''); });
+    if (!docs.length) {
+      body.innerHTML = '<div class="hist-empty">尚无历史记录，等待首次选股完成。</div>';
+      return;
+    }
+    var html = '';
+    docs.forEach(function(d){
+      var cls = pnlClass(d.pnlPct);
+      html += '<div class="hist-row">';
+      html +=   '<div class="hist-top"><span class="hist-name">'+ escapeHtml(d.name||'未知') +' <span class="hist-code mono">'+ escapeHtml(d.symbol||'') +'</span></span><span class="badge '+cls+'">'+ fmtPct(d.pnlPct) +'</span></div>';
+      html +=   '<div class="hist-dates mono">'+ (d.buyDate||'—') +' 买入 → '+ (d.sellDate||'—') +' 卖出 · '+ fmtMoney(d.buyPrice) +' → '+ fmtMoney(d.sellPrice) + (typeof d.feeCNY === 'number' ? ' · 交易成本 '+fmtMoney(d.feeCNY) : '') +'</div>';
+      if (d.sellRationale) html += '<div class="hist-dates">'+ escapeHtml(d.sellRationale) +'</div>';
+      html += '</div>';
+    });
+    body.innerHTML = html;
+  }
+
+  function bjTimeString(d){
+    var p = bjParts(d);
+    return p.year+'-'+pad(p.month)+'-'+pad(p.day)+' '+pad(p.hour)+':'+pad(p.minute)+' (北京时间)';
+  }
+
+  function renderHeartbeat(hb){
+    var el = document.getElementById('heartbeatFoot');
+    if (!hb) return;
+    var when = hb.lastRunAt ? new Date(hb.lastRunAt) : null;
+    var whenStr = when ? bjTimeString(when) : '暂无数据';
+    el.textContent = '最后更新：' + whenStr + (hb.lastRunNote ? (' · ' + hb.lastRunNote) : '') + '。行情数据来源：' + (hb.dataSource || '公开免费行情接口（新浪/东方财富等）') + '，可能存在延迟或中断；机构持仓线索来自季度定期报告等公开披露，存在滞后。';
+  }
+
+  function renderWatchlist(wl){
+    var body = document.getElementById('wlBody');
+    var today = bjParts(new Date());
+    var todayStr = today.year+'-'+pad(today.month)+'-'+pad(today.day);
+    if (!wl || wl.date !== todayStr || !Array.isArray(wl.candidates) || !wl.candidates.length) {
+      var reason = wl && wl.date !== todayStr ? '今日候选尚未生成（等待14:00任务运行）。' :
+                   (wl && wl.note ? escapeHtml(wl.note) : '今日没有列出候选股票。');
+      body.innerHTML = '<div class="wl-empty">'+ reason +'</div>';
+      return;
+    }
+    var html = '<div class="wl-grid">';
+    wl.candidates.forEach(function(c){
+      html += '<div class="wl-card">';
+      html +=   '<div class="wl-top"><div><div class="wl-name">'+ escapeHtml(c.name||'未知') +'</div><div class="wl-code mono">'+ escapeHtml(c.symbol||'') +'</div></div><div class="wl-weight">建议 '+ (typeof c.suggestedWeightPct==='number'? c.suggestedWeightPct.toFixed(1):'—') +'%</div></div>';
+      html +=   '<div class="wl-price mono">14:00价 '+ fmtMoney(c.priceAt1400) +'</div>';
+      if (c.rationale) html += '<div class="wl-rationale">'+ escapeHtml(c.rationale) +'</div>';
+      if (c.factorNote) html += '<div class="factor-tag">◆ '+ escapeHtml(c.factorNote) +'</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+    body.innerHTML = html;
+  }
+
+  function renderStrategy(s){
+    var winEl = document.getElementById('stratWinRate');
+    var avgEl = document.getElementById('stratAvgPnl');
+    var tradesEl = document.getElementById('stratTrades');
+    var notesEl = document.getElementById('stratNotes');
+    var reviewedEl = document.getElementById('stratReviewed');
+
+    if (!s || !s.totalTrades) {
+      winEl.textContent = '—'; avgEl.textContent = '—'; tradesEl.textContent = (s && s.totalTrades) ? String(s.totalTrades) : '0';
+      notesEl.innerHTML = '<div class="empty">尚无复盘记录，等待首次调仓完成后自动生成。</div>';
+      reviewedEl.textContent = '';
+      return;
+    }
+    var win = typeof s.winRatePct === 'number' ? s.winRatePct : null;
+    winEl.textContent = win!=null ? win.toFixed(1)+'%' : '—';
+    winEl.style.color = win!=null ? (win>=50?'var(--gain)':'var(--loss)') : 'var(--ink)';
+
+    var avg = typeof s.avgPnlPct === 'number' ? s.avgPnlPct : null;
+    avgEl.textContent = avg!=null ? fmtPct(avg) : '—';
+    avgEl.style.color = avg!=null ? (avg>=0?'var(--gain)':'var(--loss)') : 'var(--ink)';
+
+    tradesEl.textContent = String(s.totalTrades);
+
+    var notes = s.notes;
+    if (!notes || (Array.isArray(notes) && !notes.length)) {
+      notesEl.innerHTML = '<div class="empty">暂无经验教训记录。</div>';
+    } else if (Array.isArray(notes)) {
+      notesEl.innerHTML = '<ul>' + notes.map(function(n){ return '<li>'+escapeHtml(String(n))+'</li>'; }).join('') + '</ul>';
+    } else {
+      notesEl.innerHTML = '<div>'+ escapeHtml(String(notes)) +'</div>';
+    }
+    reviewedEl.textContent = s.lastReviewedAt ? ('最近复盘：' + bjTimeString(new Date(s.lastReviewedAt))) : '';
+  }
+
+  function fetchJson(path){
+    return fetch(path + '?t=' + Date.now(), {cache: 'no-store'})
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .catch(function(){ return null; });
+  }
+
+  function refresh(){
+    Promise.all([
+      fetchJson('data/positions.json'),
+      fetchJson('data/history.json'),
+      fetchJson('data/heartbeat.json'),
+      fetchJson('data/strategy.json'),
+      fetchJson('data/watchlist.json')
+    ]).then(function(results){
+      var positions = Array.isArray(results[0]) ? results[0] : [];
+      var history = Array.isArray(results[1]) ? results[1] : [];
+      var heartbeat = results[2];
+      var strategy = results[3];
+      var watchlist = results[4];
+
+      renderPositions(positions);
+      renderHistory(history);
+      computeAndRenderStats(positions, history);
+      renderHeartbeat(heartbeat);
+      renderStrategy(strategy);
+      renderWatchlist(watchlist);
+    });
+  }
+
+  refresh();
+  setInterval(refresh, 60000);
+})();
+</script>
+</body>
+</html>
