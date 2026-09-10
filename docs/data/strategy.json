@@ -2,6 +2,9 @@
   "winRatePct": null,
   "avgPnlPct": null,
   "totalTrades": 0,
-  "lastReviewedAt": null,
-  "notes": []
+  "lastReviewedAt": "2026-09-10T13:47:37Z",
+  "notes": [
+    "history.json暂无已平仓交易，尚无法计算胜率/平均盈亏，样本积累中，暂不做规律性结论。",
+    "本轮首次建仓（600519、300750、601318），均为半仓试探仓位，后续将结合实际盈亏表现校准仓位策略。"
+  ]
 }
