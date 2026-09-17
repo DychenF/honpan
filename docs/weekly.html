@@ -26,7 +26,8 @@
   <nav class="topnav">
     <a href="index.html" class="navlink">长线策略</a>
     <a href="short.html" class="navlink">超短线策略</a>
-    <a href="weekly.html" class="navlink active">每周复盘</a>
+    <a href="daily.html" class="navlink">每日要闻</a>
+    <a href="weekly.html" class="navlink active">复盘</a>
   </nav>
 
   <div class="disclaimer">
@@ -71,6 +72,12 @@
     <ul class="newslist" id="newsBody"><li>暂无内容。</li></ul>
   </div>
 
+  <div class="dialogue" id="dialogueCard" style="margin-top:18px;">
+    <h2><span class="accent">长短线 AI 对话</span></h2>
+    <div class="sub">长线 AI 与超短线 AI 各自独立持仓、独立资金，但每次调仓后会互相留言参考对方的判断，最近记录如下。</div>
+    <div id="dlgBody"><div class="dlg-empty">暂无AI对话记录。</div></div>
+  </div>
+
   <div class="outlook" id="outlookCard">
     <h2><span class="accent">下周展望</span></h2>
     <p id="outlookBody">暂无内容。</p>
@@ -82,6 +89,7 @@
       <li>每周五 <b>15:30（北京时间）</b>收盘后，后台任务汇总本周<a href="index.html">长线策略</a>与<a href="short.html">超短线策略</a>的平仓交易、持仓变化与已发生的消息面，生成本页内容。</li>
       <li>复盘内容基于两条策略各自的 <code>history</code>/<code>strategy</code> 数据与公开搜索得到的市场消息，AI 不会编造未查证的数据。</li>
       <li>"下周展望"为 AI 基于本周观察给出的方向性思路，同样<b>不构成投资建议</b>，仅作为策略自我迭代的参考记录。</li>
+      <li>"长短线 AI 对话"汇总两条策略每次调仓后互相留下的留言，展示最近的记录。每个交易日开盘前的消息面速览见<a href="daily.html">每日要闻</a>。</li>
     </ol>
     <div class="foot" id="heartbeatFoot">最后更新：暂无数据。</div>
   </div>
@@ -116,6 +124,9 @@
   }
 
   function refresh(){
+    RP.fetchJson('data/ai_dialogue.json').then(function(d){
+      RP.renderDialogue(Array.isArray(d) ? d : [], 'dlgBody', '暂无AI对话记录。');
+    });
     RP.fetchJson('data/weekly_review.json').then(function(w){
       if (!w || !w.generatedAt) {
         return;

@@ -2,8 +2,6 @@
   "winRatePct": null,
   "avgPnlPct": null,
   "totalTrades": 0,
-  "lastReviewedAt": "2026-09-17T14:45:00+08:00",
-  "notes": [
-    "首次运行，暂无历史成交可复盘胜率/均收益。本轮按“当日涨幅靠前+尾盘贴近日高（无冲高回落）”作为核心动量信号选股，后续需观察此类标的次日高开/低开表现，检验信号的延续性。"
-  ]
+  "lastReviewedAt": null,
+  "notes": []
 }

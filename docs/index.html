@@ -26,7 +26,8 @@
   <nav class="topnav">
     <a href="index.html" class="navlink active">长线策略</a>
     <a href="short.html" class="navlink">超短线策略</a>
-    <a href="weekly.html" class="navlink">每周复盘</a>
+    <a href="daily.html" class="navlink">每日要闻</a>
+    <a href="weekly.html" class="navlink">复盘</a>
   </nav>
 
   <div class="statusrow">
@@ -65,12 +66,6 @@
     </div>
   </div>
 
-  <div class="dialogue" id="dialogueCard">
-    <h2><span class="accent">长短线 AI 对话</span></h2>
-    <div class="sub">长线 AI 与超短线 AI 各自独立持仓、独立资金，但每次调仓后会互相留言参考对方的判断。</div>
-    <div id="dlgBody"><div class="dlg-empty">暂无AI对话记录。</div></div>
-  </div>
-
   <div class="grid">
     <div class="card" id="posCard">
       <h2><span class="accent">当前持仓</span> <span class="count" id="posCount"></span></h2>
@@ -90,7 +85,7 @@
       <li>AI 可以同时持有<b>多只股票</b>，也可以选择<b>部分或全部空仓</b>；每只股票的仓位比例由 AI 自行把控。买入的股票需遵守 <b>T+1</b> 规则。</li>
       <li>每笔平仓交易都会扣除模拟的交易成本（参考华泰证券零售电子渠道典型费率估算：佣金双向万2.5、单笔最低¥5，印花税卖出单向千0.5，过户费双向万0.1；实际账户费率可协商，可能更低），历史记录里的盈亏都是<b>扣除成本后的净值</b>。</li>
       <li>页面顶部的"累计收益率"= （历史已实现净盈亏 + 当前浮动盈亏）÷ 模拟本金，所有价格与盈亏均为模拟计算，不涉及真实资金、不对接真实券商账户。数据每次运行后通过 GitHub 更新，本页面每分钟自动刷新一次。</li>
-      <li>本站另设<a href="short.html">超短线策略</a>（当天买入、下一交易日尽快卖出，独立持仓与资金）与<a href="weekly.html">每周复盘</a>页面，长短线 AI 每次调仓后会互相留言参考。</li>
+      <li>本站另设<a href="short.html">超短线策略</a>（当天买入、下一交易日尽快卖出，独立持仓与资金）、<a href="daily.html">每日要闻</a>（每个交易日开盘前的消息面速览与预期影响）与<a href="weekly.html">复盘</a>页面，长短线 AI 每次调仓后会互相留言，留言记录可在"复盘"页查看。</li>
     </ol>
     <div class="foot" id="heartbeatFoot">最后更新：暂无数据。行情数据来源：公开免费行情接口（新浪/东方财富等），可能存在延迟或中断；机构持仓线索来自季度定期报告等公开披露，存在滞后。</div>
   </div>
@@ -316,15 +311,13 @@
       RP.fetchJson('data/history.json'),
       RP.fetchJson('data/heartbeat.json'),
       RP.fetchJson('data/strategy.json'),
-      RP.fetchJson('data/watchlist.json'),
-      RP.fetchJson('data/ai_dialogue.json')
+      RP.fetchJson('data/watchlist.json')
     ]).then(function(results){
       var positions = Array.isArray(results[0]) ? results[0] : [];
       var history = Array.isArray(results[1]) ? results[1] : [];
       var heartbeat = results[2];
       var strategy = results[3];
       var watchlist = results[4];
-      var dialogue = Array.isArray(results[5]) ? results[5] : [];
 
       renderPositions(positions);
       renderHistory(history);
@@ -332,7 +325,6 @@
       RP.renderHeartbeatInto('heartbeatFoot', heartbeat, '公开免费行情接口（新浪/东方财富等）');
       renderStrategy(strategy);
       renderWatchlist(watchlist);
-      RP.renderDialogue(dialogue, 'dlgBody', '暂无AI对话记录。');
     });
   }
 

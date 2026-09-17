@@ -210,3 +210,16 @@ header.top{
 .outlook h2{ font-size: 15px; color: var(--ink-dim); font-weight: 500; margin-bottom: 8px; }
 .outlook h2 .accent{ color: var(--accent); font-family: "Noto Serif SC", serif; font-weight: 700; font-size: 17px; }
 .outlook p{ font-size: 13.5px; color: var(--ink); margin: 0; }
+
+.brief-headline{ margin-top: 18px; padding: 16px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); border-left: 4px solid var(--gain); }
+.brief-headline .lbl{ font-size: 11px; color: var(--ink-dim); letter-spacing: 0.3px; margin-bottom: 4px; }
+.brief-headline .text{ font-size: 17px; font-weight: 700; font-family: "Noto Serif SC", serif; }
+
+.sector-grid{ display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.sector-card{ background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 11px 13px; }
+.sector-top{ display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.sector-name{ font-weight: 600; font-size: 13.5px; }
+.sector-reason{ font-size: 12.5px; margin-top: 6px; color: var(--ink); }
+.sector-tag{ display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700; white-space: nowrap; }
+.sector-tag.watch{ background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent); }
+.sector-tag.caution{ background: var(--warn-bg); color: var(--warn-ink); border: 1px solid var(--warn-border); }

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>红盘实验室 · 每日要闻</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📰</text></svg>">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <span class="seal" style="background:var(--warn-border); color:var(--warn-ink);">闻</span>
+      <div>
+        <h1>红盘实验室</h1>
+        <div class="sub">每日要闻 · 每个交易日北京时间 8:40 开盘前自动生成</div>
+      </div>
+    </div>
+    <div class="clockbox">
+      <div class="time mono" id="bjTime">--:--:--</div>
+      <div class="date" id="bjDate">北京时间加载中</div>
+    </div>
+  </header>
+
+  <nav class="topnav">
+    <a href="index.html" class="navlink">长线策略</a>
+    <a href="short.html" class="navlink">超短线策略</a>
+    <a href="daily.html" class="navlink active">每日要闻</a>
+    <a href="weekly.html" class="navlink">复盘</a>
+  </nav>
+
+  <div class="disclaimer">
+    <span style="font-size:16px; line-height:1;">⚠</span>
+    <div><b>仅为公开信息汇总与 AI 解读，非真实交易。</b> 以下内容基于公开渠道检索的隔夜消息生成，可能存在遗漏、延迟或解读偏差，<b>不构成任何投资建议</b>，据此操作的风险自行承担。</div>
+  </div>
+
+  <div class="brief-headline" id="headlineCard">
+    <div class="lbl">今日要闻速览</div>
+    <div class="text" id="headlineText">尚无今日要闻，等待北京时间 8:40 首次生成。</div>
+  </div>
+
+  <div class="watchlist" id="eventsCard" style="margin-top:18px;">
+    <h2><span class="accent">隔夜重要事件</span></h2>
+    <div class="sub" style="margin-bottom:10px;">仅收录确有公开来源的事件，查不到相关信息时本区块留空。</div>
+    <ul class="newslist" id="eventsBody"><li>暂无内容。</li></ul>
+  </div>
+
+  <div class="outlook" id="outlookCard" style="margin-top:18px;">
+    <h2><span class="accent">今日大盘预期</span></h2>
+    <p id="outlookText">暂无内容。</p>
+  </div>
+
+  <div class="watchlist" id="levelsCard" style="margin-top:18px;">
+    <h2><span class="accent">关键参考位</span></h2>
+    <div class="sub" id="levelsText" style="margin-bottom:0;">暂无内容。</div>
+  </div>
+
+  <div class="watchlist" id="sectorCard" style="margin-top:18px;">
+    <h2><span class="accent">板块方向参考</span></h2>
+    <div class="sub" style="margin-bottom:10px;">哪些方向值得关注、哪些需要谨慎，均为方向性参考，不代表具体标的推荐。</div>
+    <div class="sector-grid" id="sectorBody"><div class="wl-empty">暂无内容。</div></div>
+  </div>
+
+  <div class="watchlist" id="riskCard" style="margin-top:18px;">
+    <h2><span class="accent">风险提示</span></h2>
+    <div class="sub" id="riskText" style="margin-bottom:0;">暂无内容。</div>
+  </div>
+
+  <div class="rules">
+    <h2>运行说明</h2>
+    <ol>
+      <li>每个 A 股交易日 <b>8:40（北京时间）</b>，开盘（9:30）前，后台任务检索隔夜全球市场、宏观政策等公开消息，汇总为本页内容，供参考。</li>
+      <li>内容全部基于公开可查信息生成，查不到确切信息的部分会如实留空或说明"未检索到"，不会编造具体数据、点位或消息。</li>
+      <li>"板块方向参考"是 AI 基于当日消息面给出的方向性思路，不是具体买卖建议，也不代表<a href="index.html">长线策略</a>或<a href="short.html">超短线策略</a>当日一定会采纳。</li>
+    </ol>
+    <div class="foot" id="heartbeatFoot">最后更新：暂无数据。</div>
+  </div>
+</div>
+
+<script src="assets/common.js"></script>
+<script>
+(function(){
+  var RP = window.RP;
+
+  function tickClock(){
+    var now = new Date();
+    var p = RP.bjParts(now);
+    document.getElementById('bjTime').textContent = RP.pad(p.hour)+':'+RP.pad(p.minute)+':'+RP.pad(p.second);
+    var wdNames = ['周日','周一','周二','周三','周四','周五','周六'];
+    document.getElementById('bjDate').textContent = p.year+'-'+RP.pad(p.month)+'-'+RP.pad(p.day)+' '+wdNames[p.weekday]+' · 北京时间';
+  }
+  setInterval(tickClock, 1000);
+  tickClock();
+
+  function refresh(){
+    RP.fetchJson('data/daily_brief.json').then(function(b){
+      if (!b || !b.generatedAt) {
+        return;
+      }
+      document.getElementById('headlineText').textContent = b.headline || '暂无内容。';
+
+      var eventsBody = document.getElementById('eventsBody');
+      if (Array.isArray(b.overnightEvents) && b.overnightEvents.length) {
+        eventsBody.innerHTML = b.overnightEvents.map(function(e){
+          return '<li><div class="headline">'+ RP.escapeHtml(e.title||'') +'</div>' + (e.summary ? '<div class="note">'+ RP.escapeHtml(e.summary) +'</div>' : '') + '</li>';
+        }).join('');
+      } else {
+        eventsBody.innerHTML = '<li>今日未检索到重要隔夜事件。</li>';
+      }
+
+      document.getElementById('outlookText').textContent = b.marketOutlook || '暂无内容。';
+      document.getElementById('levelsText').textContent = b.keyLevels || '暂无内容。';
+
+      var sectorBody = document.getElementById('sectorBody');
+      if (Array.isArray(b.sectorGuidance) && b.sectorGuidance.length) {
+        sectorBody.innerHTML = b.sectorGuidance.map(function(s){
+          var watch = s.direction === '关注';
+          var tagClass = watch ? 'watch' : 'caution';
+          return '<div class="sector-card"><div class="sector-top"><div class="sector-name">'+ RP.escapeHtml(s.sector||'') +'</div><span class="sector-tag '+tagClass+'">'+ RP.escapeHtml(s.direction||'') +'</span></div>' + (s.reason ? '<div class="sector-reason">'+ RP.escapeHtml(s.reason) +'</div>' : '') + '</div>';
+        }).join('');
+      } else {
+        sectorBody.innerHTML = '<div class="wl-empty">暂无内容。</div>';
+      }
+
+      document.getElementById('riskText').textContent = b.riskNotes || '暂无内容。';
+
+      var foot = document.getElementById('heartbeatFoot');
+      var whenStr = b.generatedAt ? RP.bjTimeString(new Date(b.generatedAt)) : '暂无数据';
+      foot.textContent = '最后更新：' + whenStr + (b.note ? (' · ' + b.note) : '') + '。';
+    });
+  }
+
+  refresh();
+  setInterval(refresh, 60000);
+})();
+</script>
+</body>
+</html>
