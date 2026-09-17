@@ -1,0 +1,20 @@
+{
+  "weekStart": "",
+  "weekEnd": "",
+  "generatedAt": null,
+  "marketRecap": "",
+  "longTermRecap": {
+    "weekTrades": 0,
+    "winRatePct": null,
+    "avgPnlPct": null,
+    "summary": ""
+  },
+  "shortTermRecap": {
+    "weekTrades": 0,
+    "winRatePct": null,
+    "avgPnlPct": null,
+    "summary": ""
+  },
+  "newsHighlights": [],
+  "outlook": ""
+}

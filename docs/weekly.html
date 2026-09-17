@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>红盘实验室 · 每周复盘</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗓️</text></svg>">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <span class="seal neutral-bg">周</span>
+      <div>
+        <h1>红盘实验室</h1>
+        <div class="sub">每周复盘 · 每周五收盘后自动生成，汇总长短线两条策略的本周表现与下周展望</div>
+      </div>
+    </div>
+    <div class="clockbox">
+      <div class="time mono" id="bjTime">--:--:--</div>
+      <div class="date" id="bjDate">北京时间加载中</div>
+    </div>
+  </header>
+
+  <nav class="topnav">
+    <a href="index.html" class="navlink">长线策略</a>
+    <a href="short.html" class="navlink">超短线策略</a>
+    <a href="weekly.html" class="navlink active">每周复盘</a>
+  </nav>
+
+  <div class="disclaimer">
+    <span style="font-size:16px; line-height:1;">⚠</span>
+    <div><b>纸上模拟，非真实交易。</b> 以下复盘与展望均为 AI 基于本站模拟持仓与公开信息生成的观察总结，<b>不构成任何投资建议</b>，历史表现不代表未来收益。</div>
+  </div>
+
+  <div class="watchlist" id="rangeCard">
+    <h2><span class="accent">本期复盘范围</span></h2>
+    <div class="sub" id="rangeSub" style="margin-bottom:0;">尚无复盘记录，等待本周五收盘后首次生成。</div>
+  </div>
+
+  <div class="watchlist" id="marketCard" style="margin-top:18px;">
+    <h2><span class="accent">大盘复盘</span></h2>
+    <div class="sub" id="marketRecap" style="margin-bottom:0;">暂无内容。</div>
+  </div>
+
+  <div class="recap-grid">
+    <div class="card recap-card">
+      <h2><span class="accent">长线策略</span> · 本周表现</h2>
+      <div class="figs">
+        <div class="fig"><div class="lbl">本周平仓</div><div class="val mono" id="longTrades">—</div></div>
+        <div class="fig"><div class="lbl">累计胜率</div><div class="val mono" id="longWinRate">—</div></div>
+        <div class="fig"><div class="lbl">累计平均收益率</div><div class="val mono" id="longAvgPnl">—</div></div>
+      </div>
+      <p id="longRecap">暂无内容。</p>
+    </div>
+    <div class="card recap-card">
+      <h2><span class="accent">超短线策略</span> · 本周表现</h2>
+      <div class="figs">
+        <div class="fig"><div class="lbl">本周平仓</div><div class="val mono" id="shortTrades">—</div></div>
+        <div class="fig"><div class="lbl">累计胜率</div><div class="val mono" id="shortWinRate">—</div></div>
+        <div class="fig"><div class="lbl">累计平均收益率</div><div class="val mono" id="shortAvgPnl">—</div></div>
+      </div>
+      <p id="shortRecap">暂无内容。</p>
+    </div>
+  </div>
+
+  <div class="watchlist" id="newsCard" style="margin-top:18px;">
+    <h2><span class="accent">本周消息面</span></h2>
+    <div class="sub" style="margin-bottom:10px;">与本站持仓/候选相关的公开报道，仅供参考，不代表本站核实其准确性。</div>
+    <ul class="newslist" id="newsBody"><li>暂无内容。</li></ul>
+  </div>
+
+  <div class="outlook" id="outlookCard">
+    <h2><span class="accent">下周展望</span></h2>
+    <p id="outlookBody">暂无内容。</p>
+  </div>
+
+  <div class="rules">
+    <h2>运行说明</h2>
+    <ol>
+      <li>每周五 <b>15:30（北京时间）</b>收盘后，后台任务汇总本周<a href="index.html">长线策略</a>与<a href="short.html">超短线策略</a>的平仓交易、持仓变化与已发生的消息面，生成本页内容。</li>
+      <li>复盘内容基于两条策略各自的 <code>history</code>/<code>strategy</code> 数据与公开搜索得到的市场消息，AI 不会编造未查证的数据。</li>
+      <li>"下周展望"为 AI 基于本周观察给出的方向性思路，同样<b>不构成投资建议</b>，仅作为策略自我迭代的参考记录。</li>
+    </ol>
+    <div class="foot" id="heartbeatFoot">最后更新：暂无数据。</div>
+  </div>
+</div>
+
+<script src="assets/common.js"></script>
+<script>
+(function(){
+  var RP = window.RP;
+
+  function tickClock(){
+    var now = new Date();
+    var p = RP.bjParts(now);
+    document.getElementById('bjTime').textContent = RP.pad(p.hour)+':'+RP.pad(p.minute)+':'+RP.pad(p.second);
+    var wdNames = ['周日','周一','周二','周三','周四','周五','周六'];
+    document.getElementById('bjDate').textContent = p.year+'-'+RP.pad(p.month)+'-'+RP.pad(p.day)+' '+wdNames[p.weekday]+' · 北京时间';
+  }
+  setInterval(tickClock, 1000);
+  tickClock();
+
+  function renderRecapCard(prefix, recap){
+    document.getElementById(prefix+'Trades').textContent = (recap && typeof recap.weekTrades === 'number') ? String(recap.weekTrades) : '0';
+    var winEl = document.getElementById(prefix+'WinRate');
+    var win = recap && typeof recap.winRatePct === 'number' ? recap.winRatePct : null;
+    winEl.textContent = win!=null ? win.toFixed(1)+'%' : '—';
+    winEl.style.color = win!=null ? (win>=50?'var(--gain)':'var(--loss)') : 'var(--ink)';
+    var avgEl = document.getElementById(prefix+'AvgPnl');
+    var avg = recap && typeof recap.avgPnlPct === 'number' ? recap.avgPnlPct : null;
+    avgEl.textContent = avg!=null ? RP.fmtPct(avg) : '—';
+    avgEl.style.color = avg!=null ? (avg>=0?'var(--gain)':'var(--loss)') : 'var(--ink)';
+    document.getElementById(prefix+'Recap').textContent = (recap && recap.summary) ? recap.summary : '暂无内容。';
+  }
+
+  function refresh(){
+    RP.fetchJson('data/weekly_review.json').then(function(w){
+      if (!w || !w.generatedAt) {
+        return;
+      }
+      document.getElementById('rangeSub').textContent = (w.weekStart && w.weekEnd)
+        ? ('复盘区间：' + w.weekStart + ' ~ ' + w.weekEnd + '（北京时间）')
+        : '尚无复盘记录。';
+      document.getElementById('marketRecap').textContent = w.marketRecap || '暂无内容。';
+      renderRecapCard('long', w.longTermRecap);
+      renderRecapCard('short', w.shortTermRecap);
+
+      var newsBody = document.getElementById('newsBody');
+      if (Array.isArray(w.newsHighlights) && w.newsHighlights.length) {
+        newsBody.innerHTML = w.newsHighlights.map(function(n){
+          return '<li><div class="headline">'+ RP.escapeHtml(n.headline||'') +'</div>' + (n.note ? '<div class="note">'+ RP.escapeHtml(n.note) +'</div>' : '') + '</li>';
+        }).join('');
+      } else {
+        newsBody.innerHTML = '<li>本周未检索到与持仓/候选相关的公开消息。</li>';
+      }
+
+      document.getElementById('outlookBody').textContent = w.outlook || '暂无内容。';
+
+      var foot = document.getElementById('heartbeatFoot');
+      var whenStr = w.generatedAt ? RP.bjTimeString(new Date(w.generatedAt)) : '暂无数据';
+      foot.textContent = '最后更新：' + whenStr + '。';
+    });
+  }
+
+  refresh();
+  setInterval(refresh, 60000);
+})();
+</script>
+</body>
+</html>

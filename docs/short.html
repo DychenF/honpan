@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>红盘实验室 · 长线策略</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
+<title>红盘实验室 · 超短线策略</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <div class="brand">
-      <span class="seal">盘</span>
+      <span class="seal accent-bg">短</span>
       <div>
         <h1>红盘实验室</h1>
-        <div class="sub">长线 AI · A 股模拟观测 · 每个交易日 14:00 候选 / 14:30 调仓</div>
+        <div class="sub">超短线 AI · A 股模拟观测 · 每个交易日 14:45 当天买入 / 次日尽快卖出</div>
       </div>
     </div>
     <div class="clockbox">
@@ -24,8 +24,8 @@
   </header>
 
   <nav class="topnav">
-    <a href="index.html" class="navlink active">长线策略</a>
-    <a href="short.html" class="navlink">超短线策略</a>
+    <a href="index.html" class="navlink">长线策略</a>
+    <a href="short.html" class="navlink active">超短线策略</a>
     <a href="weekly.html" class="navlink">每周复盘</a>
   </nav>
 
@@ -36,7 +36,7 @@
 
   <div class="disclaimer">
     <span style="font-size:16px; line-height:1;">⚠</span>
-    <div><b>纸上模拟，非真实交易。</b> 本站所有买卖均为虚拟记录（模拟本金 ¥100,000，长线与超短线策略各自独立核算），用于展示多因子选股与仓位管理思路，<b>不构成任何投资建议</b>，历史表现不代表未来收益。请勿依据本站内容进行真实交易决策。</div>
+    <div><b>纸上模拟，非真实交易。</b> 本站所有买卖均为虚拟记录（模拟本金 ¥100,000，与长线策略各自独立核算、互不占用资金），用于展示日内/次日动量博弈思路，<b>不构成任何投资建议</b>，历史表现不代表未来收益。请勿依据本站内容进行真实交易决策。</div>
   </div>
 
   <div class="stats">
@@ -46,10 +46,9 @@
     <div class="stat"><div class="lbl">现金仓位</div><div class="val mono" id="statCash">—</div><div class="sub" id="statCashSub">未投入资金占比</div></div>
   </div>
 
-  <div class="watchlist" id="watchlistCard">
-    <h2><span class="accent">14:00 候选观察</span></h2>
-    <div class="sub">每个交易日14:00列出的候选股票，14:30 会结合这之后30分钟的涨跌幅决定全部买入、部分买入或放弃——最终结果以下方"当前持仓"为准。</div>
-    <div id="wlBody"><div class="wl-empty">尚无今日候选记录。</div></div>
+  <div class="watchlist">
+    <h2><span class="accent">策略定位</span></h2>
+    <div class="sub" style="margin-bottom:0;">超短线 AI 每个交易日 <b>14:45（北京时间）</b> 运行一次：优先卖出前一交易日买入、已满足 T+1 条件的持仓（到期即倾向了结，不做长期持有判断），再从当日盘面中挑选 0-3 只动量/成交量信号明确的标的当天买入，计划下一交易日尽快卖出，追求快进快出的高胜率小波段，与长线 AI 的中期机构线索型选股相互独立、互不占用资金。</div>
   </div>
 
   <div class="strategy" id="strategyCard">
@@ -85,14 +84,13 @@
   <div class="rules">
     <h2>运行说明</h2>
     <ol>
-      <li>每个 A 股交易日 <b>14:00（北京时间）</b>，后台任务列出当天候选股票；<b>14:30</b> 结合这之后30分钟的涨跌幅，自主决定全部买入、部分买入或放弃，并处理已有持仓的卖出判断。</li>
-      <li>决策综合技术面因子（涨跌幅、量能、走势）与<b>公开可查的机构持仓线索</b>（个股定期报告披露的十大流通股东中出现的量化私募/知名机构，作为参考信号之一）。</li>
-      <li>AI 可以同时持有<b>多只股票</b>，也可以选择<b>部分或全部空仓</b>；每只股票的仓位比例由 AI 自行把控。买入的股票需遵守 <b>T+1</b> 规则。</li>
-      <li>每笔平仓交易都会扣除模拟的交易成本（参考华泰证券零售电子渠道典型费率估算：佣金双向万2.5、单笔最低¥5，印花税卖出单向千0.5，过户费双向万0.1；实际账户费率可协商，可能更低），历史记录里的盈亏都是<b>扣除成本后的净值</b>。</li>
+      <li>每个 A 股交易日 <b>14:45（北京时间）</b>，后台任务先处理前一交易日买入、已满足 <b>T+1</b> 条件的持仓——超短线策略以"次日尽快卖出"为纪律，到期后倾向直接了结而非长期持有，除非当日行情明显异常。</li>
+      <li>了结旧仓后，再从当日盘面（涨跌幅、成交量、分时动量）中挑选 0-3 只信号明确的标的当天买入，作为次日的待卖仓位。</li>
+      <li>与<a href="index.html">长线策略</a>使用<b>独立的模拟本金（¥100,000）与独立持仓</b>，互不占用彼此资金；两个策略每次调仓后会互相留言，可在下方"长短线 AI 对话"查看。</li>
+      <li>每笔平仓交易都会扣除模拟的交易成本（参考华泰证券零售电子渠道典型费率估算：佣金双向万2.5、单笔最低¥5，印花税卖出单向千0.5，过户费双向万0.1），历史记录里的盈亏都是<b>扣除成本后的净值</b>。</li>
       <li>页面顶部的"累计收益率"= （历史已实现净盈亏 + 当前浮动盈亏）÷ 模拟本金，所有价格与盈亏均为模拟计算，不涉及真实资金、不对接真实券商账户。数据每次运行后通过 GitHub 更新，本页面每分钟自动刷新一次。</li>
-      <li>本站另设<a href="short.html">超短线策略</a>（当天买入、下一交易日尽快卖出，独立持仓与资金）与<a href="weekly.html">每周复盘</a>页面，长短线 AI 每次调仓后会互相留言参考。</li>
     </ol>
-    <div class="foot" id="heartbeatFoot">最后更新：暂无数据。行情数据来源：公开免费行情接口（新浪/东方财富等），可能存在延迟或中断；机构持仓线索来自季度定期报告等公开披露，存在滞后。</div>
+    <div class="foot" id="heartbeatFoot">最后更新：暂无数据。行情数据来源：公开免费行情接口（新浪/东方财富等），可能存在延迟或中断。</div>
   </div>
 </div>
 
@@ -105,7 +103,7 @@
   function nextPick(p, now){
     var daysAhead = 0;
     var isWeekday = p.weekday >= 1 && p.weekday <= 5;
-    if (isWeekday && p.minutesOfDay < 14*60+30) {
+    if (isWeekday && p.minutesOfDay < 14*60+45) {
       daysAhead = 0;
     } else {
       daysAhead = 1;
@@ -115,7 +113,7 @@
     var approx = now.getTime() + daysAhead*86400000;
     var approxDate = new Date(approx);
     var bp = RP.bjParts(approxDate);
-    var targetMinUTCms = approx - (bp.minutesOfDay - (14*60+30)) * 60000 - bp.second*1000;
+    var targetMinUTCms = approx - (bp.minutesOfDay - (14*60+45)) * 60000 - bp.second*1000;
     return new Date(targetMinUTCms);
   }
 
@@ -136,9 +134,9 @@
     var h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
     var pickPill = document.getElementById('pickPill');
     var isWeekday = p.weekday>=1 && p.weekday<=5;
-    var atPickWindow = isWeekday && p.minutesOfDay >= 14*60+29 && p.minutesOfDay <= 14*60+31;
+    var atPickWindow = isWeekday && p.minutesOfDay >= 14*60+44 && p.minutesOfDay <= 14*60+46;
     pickPill.className = 'pill' + (atPickWindow ? ' live' : '');
-    document.getElementById('pickLabel').textContent = '距下次 14:30 调仓 ' + RP.pad(h)+':'+RP.pad(m)+':'+RP.pad(s);
+    document.getElementById('pickLabel').textContent = '距下次 14:45 调仓 ' + RP.pad(h)+':'+RP.pad(m)+':'+RP.pad(s);
 
     var countdownEl = document.querySelector('.pos-empty .countdown');
     if (countdownEl) countdownEl.textContent = RP.pad(h)+':'+RP.pad(m)+':'+RP.pad(s);
@@ -224,7 +222,7 @@
 
       html +=   '<div class="meta-row"><span>买入时间 <b>'+ (pos.buyDate||'—') +' ' + (pos.buyTime||'') +'</b></span></div>';
 
-      if (!canSellToday) html += '<div class="t1-note">🔒 T+1 限制：今日买入，最早下一交易日方可卖出</div>';
+      if (!canSellToday) html += '<div class="plan-note">⏱ 计划下一交易日尽快卖出（T+1 满足前不可卖）</div>';
       html += '</div>';
     });
     html += '</div>';
@@ -250,29 +248,6 @@
       if (d.sellRationale) html += '<div class="hist-dates">'+ RP.escapeHtml(d.sellRationale) +'</div>';
       html += '</div>';
     });
-    body.innerHTML = html;
-  }
-
-  function renderWatchlist(wl){
-    var body = document.getElementById('wlBody');
-    var today = RP.bjParts(new Date());
-    var todayStr = today.year+'-'+RP.pad(today.month)+'-'+RP.pad(today.day);
-    if (!wl || wl.date !== todayStr || !Array.isArray(wl.candidates) || !wl.candidates.length) {
-      var reason = wl && wl.date !== todayStr ? '今日候选尚未生成（等待14:00任务运行）。' :
-                   (wl && wl.note ? RP.escapeHtml(wl.note) : '今日没有列出候选股票。');
-      body.innerHTML = '<div class="wl-empty">'+ reason +'</div>';
-      return;
-    }
-    var html = '<div class="wl-grid">';
-    wl.candidates.forEach(function(c){
-      html += '<div class="wl-card">';
-      html +=   '<div class="wl-top"><div><div class="wl-name">'+ RP.escapeHtml(c.name||'未知') +'</div><div class="wl-code mono">'+ RP.escapeHtml(c.symbol||'') +'</div></div><div class="wl-weight">建议 '+ (typeof c.suggestedWeightPct==='number'? c.suggestedWeightPct.toFixed(1):'—') +'%</div></div>';
-      html +=   '<div class="wl-price mono">14:00价 '+ RP.fmtMoney(c.priceAt1400) +'</div>';
-      if (c.rationale) html += '<div class="wl-rationale">'+ RP.escapeHtml(c.rationale) +'</div>';
-      if (c.factorNote) html += '<div class="factor-tag">◆ '+ RP.escapeHtml(c.factorNote) +'</div>';
-      html += '</div>';
-    });
-    html += '</div>';
     body.innerHTML = html;
   }
 
@@ -312,26 +287,23 @@
 
   function refresh(){
     Promise.all([
-      RP.fetchJson('data/positions.json'),
-      RP.fetchJson('data/history.json'),
-      RP.fetchJson('data/heartbeat.json'),
-      RP.fetchJson('data/strategy.json'),
-      RP.fetchJson('data/watchlist.json'),
+      RP.fetchJson('data/positions_short.json'),
+      RP.fetchJson('data/history_short.json'),
+      RP.fetchJson('data/heartbeat_short.json'),
+      RP.fetchJson('data/strategy_short.json'),
       RP.fetchJson('data/ai_dialogue.json')
     ]).then(function(results){
       var positions = Array.isArray(results[0]) ? results[0] : [];
       var history = Array.isArray(results[1]) ? results[1] : [];
       var heartbeat = results[2];
       var strategy = results[3];
-      var watchlist = results[4];
-      var dialogue = Array.isArray(results[5]) ? results[5] : [];
+      var dialogue = Array.isArray(results[4]) ? results[4] : [];
 
       renderPositions(positions);
       renderHistory(history);
       computeAndRenderStats(positions, history);
       RP.renderHeartbeatInto('heartbeatFoot', heartbeat, '公开免费行情接口（新浪/东方财富等）');
       renderStrategy(strategy);
-      renderWatchlist(watchlist);
       RP.renderDialogue(dialogue, 'dlgBody', '暂无AI对话记录。');
     });
   }
