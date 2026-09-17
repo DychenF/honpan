@@ -47,6 +47,12 @@
     <div class="stat"><div class="lbl">现金仓位</div><div class="val mono" id="statCash">—</div><div class="sub" id="statCashSub">未投入资金占比</div></div>
   </div>
 
+  <div class="perf-card">
+    <h2><span class="accent">收益走势</span> · 与沪深300对比</h2>
+    <div class="sub">组合累计收益率（已实现+浮动）与沪深300指数在同一时间窗口的涨跌幅对比，均以本策略首次记录当日为基准（0%）。</div>
+    <div id="perfChart"><div class="perf-empty">加载中…</div></div>
+  </div>
+
   <div class="watchlist">
     <h2><span class="accent">策略定位</span></h2>
     <div class="sub" style="margin-bottom:0;">超短线 AI 每个交易日 <b>14:45（北京时间）</b> 运行一次：优先卖出前一交易日买入、已满足 T+1 条件的持仓（到期即倾向了结，不做长期持有判断），再从当日盘面中挑选 0-3 只动量/成交量信号明确的标的当天买入，计划下一交易日尽快卖出，追求快进快出的高胜率小波段，与长线 AI 的中期机构线索型选股相互独立、互不占用资金。</div>
@@ -285,18 +291,21 @@
       RP.fetchJson('data/positions_short.json'),
       RP.fetchJson('data/history_short.json'),
       RP.fetchJson('data/heartbeat_short.json'),
-      RP.fetchJson('data/strategy_short.json')
+      RP.fetchJson('data/strategy_short.json'),
+      RP.fetchJson('data/perf_history_short.json')
     ]).then(function(results){
       var positions = Array.isArray(results[0]) ? results[0] : [];
       var history = Array.isArray(results[1]) ? results[1] : [];
       var heartbeat = results[2];
       var strategy = results[3];
+      var perfHistory = Array.isArray(results[4]) ? results[4] : [];
 
       renderPositions(positions);
       renderHistory(history);
       computeAndRenderStats(positions, history);
       RP.renderHeartbeatInto('heartbeatFoot', heartbeat, '公开免费行情接口（新浪/东方财富等）');
       renderStrategy(strategy);
+      RP.renderPerfChart('perfChart', perfHistory, {portfolioLabel: '超短线组合', benchmarkLabel: '沪深300'});
     });
   }
 

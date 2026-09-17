@@ -47,6 +47,12 @@
     <div class="stat"><div class="lbl">现金仓位</div><div class="val mono" id="statCash">—</div><div class="sub" id="statCashSub">未投入资金占比</div></div>
   </div>
 
+  <div class="perf-card">
+    <h2><span class="accent">收益走势</span> · 与沪深300对比</h2>
+    <div class="sub">组合累计收益率（已实现+浮动）与沪深300指数在同一时间窗口的涨跌幅对比，均以本策略首次记录当日为基准（0%）。</div>
+    <div id="perfChart"><div class="perf-empty">加载中…</div></div>
+  </div>
+
   <div class="watchlist" id="watchlistCard">
     <h2><span class="accent">14:00 候选观察</span></h2>
     <div class="sub">每个交易日14:00列出的候选股票，14:30 会结合这之后30分钟的涨跌幅决定全部买入、部分买入或放弃——最终结果以下方"当前持仓"为准。</div>
@@ -311,13 +317,15 @@
       RP.fetchJson('data/history.json'),
       RP.fetchJson('data/heartbeat.json'),
       RP.fetchJson('data/strategy.json'),
-      RP.fetchJson('data/watchlist.json')
+      RP.fetchJson('data/watchlist.json'),
+      RP.fetchJson('data/perf_history.json')
     ]).then(function(results){
       var positions = Array.isArray(results[0]) ? results[0] : [];
       var history = Array.isArray(results[1]) ? results[1] : [];
       var heartbeat = results[2];
       var strategy = results[3];
       var watchlist = results[4];
+      var perfHistory = Array.isArray(results[5]) ? results[5] : [];
 
       renderPositions(positions);
       renderHistory(history);
@@ -325,6 +333,7 @@
       RP.renderHeartbeatInto('heartbeatFoot', heartbeat, '公开免费行情接口（新浪/东方财富等）');
       renderStrategy(strategy);
       renderWatchlist(watchlist);
+      RP.renderPerfChart('perfChart', perfHistory, {portfolioLabel: '长线组合', benchmarkLabel: '沪深300'});
     });
   }
 
