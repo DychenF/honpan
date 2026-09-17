@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "symbol": "600519",
+    "name": "贵州茅台",
+    "buyPrice": 1266.98,
+    "buyDate": "2026-09-17",
+    "buyTime": "14:45",
+    "weightPct": 35,
+    "costCNY": 35000,
+    "buyFeeCNY": 9.10,
+    "rationale": "今日涨幅约0.71%，现价1266.98元紧贴日内最高价1267.60元，全天低点1254元后强势拉升未见冲高回落，短线动量健康，计划次日尽快兑现。",
+    "factorNote": "动量+盘中强势收在高位",
+    "sector": "食品饮料-白酒",
+    "lastPrice": 1266.98,
+    "lastUpdated": "2026-09-17T14:45:00+08:00",
+    "holdDays": 0
+  },
+  {
+    "symbol": "002594",
+    "name": "比亚迪",
+    "buyPrice": 84.97,
+    "buyDate": "2026-09-17",
+    "buyTime": "14:45",
+    "weightPct": 35,
+    "costCNY": 35000,
+    "buyFeeCNY": 9.10,
+    "rationale": "今日涨幅约1.20%，成交额超22亿元显示资金活跃，虽较日高85.56元小幅回落但仍站稳昨收上方，无明显破位风险，作为短线波段标的。",
+    "factorNote": "涨幅居前+成交放量",
+    "sector": "汽车-新能源整车",
+    "lastPrice": 84.97,
+    "lastUpdated": "2026-09-17T14:45:00+08:00",
+    "holdDays": 0
+  },
+  {
+    "symbol": "600887",
+    "name": "伊利股份",
+    "buyPrice": 26.56,
+    "buyDate": "2026-09-17",
+    "buyTime": "14:45",
+    "weightPct": 30,
+    "costCNY": 30000,
+    "buyFeeCNY": 7.80,
+    "rationale": "今日涨幅约1.76%，为候选池当日涨幅最大标的，现价26.56元几乎贴合日内最高价26.58元，未见明显冲高回落，短线强势特征明显。",
+    "factorNote": "涨幅第一+尾盘强势",
+    "sector": "食品饮料-乳制品",
+    "lastPrice": 26.56,
+    "lastUpdated": "2026-09-17T14:45:00+08:00",
+    "holdDays": 0
+  }
+]
