@@ -1,5 +1,5 @@
 {
-  "lastRunAt": null,
-  "lastRunNote": "尚未运行",
-  "dataSource": ""
+  "lastRunAt": "2026-09-18T14:46:00+08:00",
+  "lastRunNote": "首次运行：无到期持仓需处理；从候选池中筛选出3只今日强势动量标的建仓（紫金矿业40%/恒瑞医药30%/海康威视30%，合计100%仓位），计划次日尽快卖出。",
+  "dataSource": "新浪财经(hq.sinajs.cn)"
 }

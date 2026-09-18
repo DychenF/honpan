@@ -2,6 +2,8 @@
   "winRatePct": null,
   "avgPnlPct": null,
   "totalTrades": 0,
-  "lastReviewedAt": null,
-  "notes": []
+  "lastReviewedAt": "2026-09-18T14:46:00+08:00",
+  "notes": [
+    "首次建仓，暂无历史交易可供复盘。本轮选股依据：今日涨幅居前且现价贴近日内高点（未见冲高回落）、成交额明显放大的标的，后续将根据次日卖出结果验证此类动量信号的延续/衰减规律。"
+  ]
 }
