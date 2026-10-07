@@ -275,14 +275,7 @@
 
     tradesEl.textContent = String(s.totalTrades);
 
-    var notes = s.notes;
-    if (!notes || (Array.isArray(notes) && !notes.length)) {
-      notesEl.innerHTML = '<div class="empty">暂无经验教训记录。</div>';
-    } else if (Array.isArray(notes)) {
-      notesEl.innerHTML = '<ul>' + notes.map(function(n){ return '<li>'+RP.escapeHtml(String(n))+'</li>'; }).join('') + '</ul>';
-    } else {
-      notesEl.innerHTML = '<div>'+ RP.escapeHtml(String(notes)) +'</div>';
-    }
+    RP.renderNotesCalendar('stratNotes', s.notes, {emptyMsg: '暂无经验教训记录。'});
     reviewedEl.textContent = s.lastReviewedAt ? ('最近复盘：' + RP.bjTimeString(new Date(s.lastReviewedAt))) : '';
   }
 

@@ -239,11 +239,166 @@ window.RP = (function(){
     hitRect.addEventListener('blur', hide);
   }
 
+  // Groups an array of dated objects by their date field, producing one {date, html}
+  // per date via renderFn(entriesForThatDate, date).
+  function groupByDate(entries, dateKey, renderFn){
+    var map = {}, order = [];
+    (entries||[]).forEach(function(e){
+      var d = e && e[dateKey];
+      if (!d) return;
+      if (!map[d]) { map[d] = []; order.push(d); }
+      map[d].push(e);
+    });
+    order.sort();
+    return order.map(function(d){ return {date: d, html: renderFn(map[d], d)}; });
+  }
+
+  // Renders a recent-list-by-default, calendar-to-browse-older log into containerId.
+  // groups: array of {date:'YYYY-MM-DD', html:'<...>'} (one entry per date; merge same-date items first).
+  function renderCalendarLog(containerId, groups, opts){
+    opts = opts || {};
+    var recentCount = opts.recentCount || 30;
+    var emptyMsg = opts.emptyMsg || '暂无记录。';
+    var container = document.getElementById(containerId);
+    if (!container) return;
+
+    var items = (Array.isArray(groups) ? groups.slice() : []).filter(function(g){ return g && g.date && g.html; });
+    items.sort(function(a,b){ return a.date < b.date ? -1 : (a.date > b.date ? 1 : 0); });
+
+    if (!items.length) {
+      container.innerHTML = '<div class="cal-empty">' + escapeHtml(emptyMsg) + '</div>';
+      return;
+    }
+
+    var byDate = {};
+    items.forEach(function(it){ byDate[it.date] = it.html; });
+
+    var todayP = bjParts(new Date());
+    var todayStr = todayP.year + '-' + pad(todayP.month) + '-' + pad(todayP.day);
+    var minDate = items[0].date, maxDate = items[items.length-1].date;
+
+    var state = {
+      mode: 'recent',
+      viewYear: parseInt(maxDate.slice(0,4), 10),
+      viewMonth: parseInt(maxDate.slice(5,7), 10),
+      selected: maxDate
+    };
+
+    function monthKey(y,m){ return y + '-' + pad(m); }
+    function shiftMonth(y,m,delta){
+      m += delta;
+      while (m > 12) { m -= 12; y += 1; }
+      while (m < 1) { m += 12; y -= 1; }
+      return [y,m];
+    }
+
+    function renderRecent(){
+      return items.slice(-recentCount).reverse().map(function(it){
+        return '<div class="cal-recent-item"><div class="cal-recent-date mono">'+ escapeHtml(it.date) +'</div><div class="cal-recent-body">'+ it.html +'</div></div>';
+      }).join('');
+    }
+
+    function renderMonthGrid(y, m){
+      var first = new Date(Date.UTC(y, m-1, 1));
+      var firstWeekday = first.getUTCDay();
+      var daysInMonth = new Date(Date.UTC(y, m, 0)).getUTCDate();
+      var wdNames = ['日','一','二','三','四','五','六'];
+      var canPrev = monthKey(y,m) > monthKey(parseInt(minDate.slice(0,4),10), parseInt(minDate.slice(5,7),10));
+      var canNext = monthKey(y,m) < monthKey(todayP.year, todayP.month);
+      var html = '<div class="cal-month-nav">';
+      html += '<button type="button" class="cal-nav-btn" data-cal-prev' + (canPrev?'':' disabled') + '>‹</button>';
+      html += '<span class="cal-month-label">'+ y + ' 年 ' + m + ' 月</span>';
+      html += '<button type="button" class="cal-nav-btn" data-cal-next' + (canNext?'':' disabled') + '>›</button>';
+      html += '</div><div class="cal-grid">';
+      wdNames.forEach(function(wd){ html += '<div class="cal-weekday">'+wd+'</div>'; });
+      for (var i=0;i<firstWeekday;i++){ html += '<div class="cal-cell cal-cell-empty"></div>'; }
+      for (var d=1; d<=daysInMonth; d++){
+        var dateStr = y + '-' + pad(m) + '-' + pad(d);
+        var has = !!byDate[dateStr];
+        var cls = 'cal-cell' + (has?' has-entry':'') + (dateStr===todayStr?' cal-today':'') + (dateStr===state.selected?' cal-selected':'');
+        html += '<div class="'+cls+'"' + (has?' data-cal-date="'+dateStr+'" tabindex="0" role="button"':'') + '>'+d+(has?'<span class="cal-dot"></span>':'')+'</div>';
+      }
+      html += '</div>';
+      return html;
+    }
+
+    function render(){
+      var html = '<div class="cal-toolbar">';
+      if (state.mode === 'recent') {
+        html += '<span class="cal-toolbar-label">最近 ' + Math.min(recentCount, items.length) + ' 条记录</span>';
+        html += '<button type="button" class="cal-toggle-btn" data-cal-open>📅 过往日历</button>';
+      } else {
+        html += '<button type="button" class="cal-toggle-btn" data-cal-close>← 返回最近记录</button>';
+      }
+      html += '</div>';
+
+      if (state.mode === 'recent') {
+        html += '<div class="cal-recent-list">' + renderRecent() + '</div>';
+      } else {
+        html += '<div class="cal-month-panel">' + renderMonthGrid(state.viewYear, state.viewMonth) + '</div>';
+        html += '<div class="cal-detail">' + (byDate[state.selected] || '<div class="cal-empty">点击日历上的高亮日期查看记录。</div>') + '</div>';
+      }
+      container.innerHTML = html;
+      bind();
+    }
+
+    function bind(){
+      var openBtn = container.querySelector('[data-cal-open]');
+      if (openBtn) openBtn.addEventListener('click', function(){ state.mode='month'; render(); });
+      var closeBtn = container.querySelector('[data-cal-close]');
+      if (closeBtn) closeBtn.addEventListener('click', function(){ state.mode='recent'; render(); });
+      var prevBtn = container.querySelector('[data-cal-prev]');
+      if (prevBtn && !prevBtn.disabled) prevBtn.addEventListener('click', function(){
+        var nm = shiftMonth(state.viewYear, state.viewMonth, -1);
+        state.viewYear = nm[0]; state.viewMonth = nm[1]; render();
+      });
+      var nextBtn = container.querySelector('[data-cal-next]');
+      if (nextBtn && !nextBtn.disabled) nextBtn.addEventListener('click', function(){
+        var nm = shiftMonth(state.viewYear, state.viewMonth, 1);
+        state.viewYear = nm[0]; state.viewMonth = nm[1]; render();
+      });
+      Array.prototype.forEach.call(container.querySelectorAll('[data-cal-date]'), function(cell){
+        cell.addEventListener('click', function(){ state.selected = cell.getAttribute('data-cal-date'); render(); });
+        cell.addEventListener('keydown', function(evt){
+          if (evt.key === 'Enter' || evt.key === ' ') { evt.preventDefault(); cell.click(); }
+        });
+      });
+    }
+
+    render();
+  }
+
+  // Convenience wrapper: renders strategy.json-style notes [{date, note}] via the calendar log.
+  function renderNotesCalendar(containerId, notes, opts){
+    opts = opts || {};
+    var groups = (Array.isArray(notes) ? notes : [])
+      .filter(function(n){ return n && n.date && n.note; })
+      .map(function(n){ return {date: n.date, html: '<div class="cal-note-text">'+ escapeHtml(n.note) +'</div>'}; });
+    renderCalendarLog(containerId, groups, {recentCount: opts.recentCount || 30, emptyMsg: opts.emptyMsg || '尚无复盘记录，等待首次调仓完成后自动生成。'});
+  }
+
+  // Convenience wrapper: renders ai_dialogue.json entries via the calendar log, grouped by date.
+  function renderDialogueCalendar(containerId, entries, opts){
+    opts = opts || {};
+    var groups = groupByDate(Array.isArray(entries) ? entries : [], 'date', function(group){
+      return group.map(function(e){
+        var side = e.speaker === '短线AI' ? 'short' : 'long';
+        return '<div class="dlg-row dlg-'+side+'">'
+          + '<div class="dlg-meta"><span class="dlg-speaker">'+ escapeHtml(e.speaker||'AI') +'</span><span class="dlg-time mono">'+ escapeHtml(e.time||'') +'</span></div>'
+          + '<div class="dlg-text">'+ escapeHtml(e.note||'') +'</div>'
+          + '</div>';
+      }).join('');
+    });
+    renderCalendarLog(containerId, groups, {recentCount: opts.recentCount || 30, emptyMsg: opts.emptyMsg || '暂无AI对话记录。'});
+  }
+
   return {
     bjParts: bjParts, pad: pad, marketStatus: marketStatus,
     fmtMoney: fmtMoney, fmtPct: fmtPct, pnlClass: pnlClass,
     escapeHtml: escapeHtml, fetchJson: fetchJson, bjTimeString: bjTimeString,
     renderDialogue: renderDialogue, renderHeartbeatInto: renderHeartbeatInto,
-    renderPerfChart: renderPerfChart
+    renderPerfChart: renderPerfChart,
+    renderCalendarLog: renderCalendarLog, renderNotesCalendar: renderNotesCalendar,
+    renderDialogueCalendar: renderDialogueCalendar
   };
 })();

@@ -125,7 +125,7 @@
 
   function refresh(){
     RP.fetchJson('data/ai_dialogue.json').then(function(d){
-      RP.renderDialogue(Array.isArray(d) ? d : [], 'dlgBody', '暂无AI对话记录。');
+      RP.renderDialogueCalendar('dlgBody', Array.isArray(d) ? d : [], {emptyMsg: '暂无AI对话记录。'});
     });
     RP.fetchJson('data/weekly_review.json').then(function(w){
       if (!w || !w.generatedAt) {
