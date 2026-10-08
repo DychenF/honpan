@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "date": "2026-10-08",
+    "portfolioPct": 0,
+    "benchmarkPct": 0,
+    "portfolioBaseline": -1.8531,
+    "benchmarkClose": 4291.959
+  }
+]
