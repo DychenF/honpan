@@ -26,5 +26,12 @@
     "benchmarkPct": -0.92,
     "portfolioBaseline": 1.27,
     "benchmarkClose": 4268.754
+  },
+  {
+    "date": "2026-10-14",
+    "portfolioPct": -0.01,
+    "benchmarkPct": -2.10,
+    "portfolioBaseline": 1.27,
+    "benchmarkClose": 4217.928
   }
 ]
