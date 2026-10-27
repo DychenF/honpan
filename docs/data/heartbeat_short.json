@@ -1,5 +1,5 @@
 {
-  "lastRunAt": "2026-10-26T06:48:00Z",
-  "lastRunNote": "14:48交易任务：当前持仓为空（上轮10-09已全部清仓），本轮无T+1到期仓位需处理，可用现金100%。候选池环节：新浪财经成交额排行榜接口(vip.stock.finance.sina.com.cn)CONNECT隧道仍被组织出口策略拒绝(403)；东方财富push2.eastmoney.com排行榜接口按既定指引不再重试；WebSearch两次查询（成交额排行榜、涨幅榜/盘中实时）均未检索到2026年10月26日盘中实时排行数据。候选池数据源连续第13个交易日故障，不编造候选池数据，本轮不开新仓(0只)，延续空仓观望。沪深300指数通过新浪财经(hq.sinajs.cn / sz399300)成功获取现价4089.266点，腾讯股票(qt.gtimg.cn)交叉核实一致(4093.22点)，已用于更新perf_history_short.json。",
-  "dataSource": "新浪财经(hq.sinajs.cn, list=sz399300)指数快照成功，腾讯股票(qt.gtimg.cn)交叉核实一致；成交额排行榜接口(新浪vip.stock.finance.sina.com.cn CONNECT 403被组织策略拒绝)失败，东方财富push2.eastmoney.com按指引不再重试，WebSearch两次查询未检索到当日排行数据，候选池筛选未执行"
+  "lastRunAt": "2026-10-27T06:49:00Z",
+  "lastRunNote": "14:49交易任务：当前持仓为空（上轮10-09已全部清仓），本轮无T+1到期仓位需处理，可用现金100%。候选池环节：新浪财经成交额排行榜接口(vip.stock.finance.sina.com.cn)CONNECT隧道仍被组织出口策略拒绝(403)，同域的money.finance.sina.com.cn/finance.sina.com.cn同样被拒；东方财富push2.eastmoney.com排行榜接口按既定指引不再尝试；WebSearch两次查询（成交额排行榜、涨幅榜/盘中实时）均未检索到2026年10月27日盘中实时排行数据。候选池数据源连续第14个交易日故障，不编造候选池数据，本轮不开新仓(0只)，延续空仓观望。沪深300指数通过新浪财经(hq.sinajs.cn / sz399300)成功获取现价4070.664点，腾讯股票(qt.gtimg.cn / sh000300)交叉核实一致(约4069.28点，涨跌-0.83%)，已用于更新perf_history_short.json；指数较昨日窄幅震荡格局明显走弱。",
+  "dataSource": "新浪财经(hq.sinajs.cn, list=sz399300)指数快照成功，腾讯股票(qt.gtimg.cn, sh000300)交叉核实一致；成交额排行榜接口(新浪vip.stock.finance.sina.com.cn CONNECT 403被组织策略拒绝，money.finance.sina.com.cn/finance.sina.com.cn同域同样被拒)失败，东方财富push2.eastmoney.com按指引不再重试，WebSearch两次查询未检索到当日排行数据，候选池筛选未执行"
 }
