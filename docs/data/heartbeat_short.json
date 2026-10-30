@@ -1,5 +1,5 @@
 {
-  "lastRunAt": "2026-10-29T06:47:00Z",
-  "lastRunNote": "14:47交易任务：当前持仓为空（上轮10-09已全部清仓），本轮无T+1到期仓位需处理，可用现金100%。候选池环节：新浪财经成交额排行榜接口(vip.stock.finance.sina.com.cn)CONNECT隧道仍被组织出口策略拒绝(403，已通过代理状态接口确认为policy denial)；同花顺d.10jqka.com.cn排行榜接口仍为502网关错误；东方财富push2.eastmoney.com按既定指引不再重试；WebSearch查询\"今日A股成交额排行榜 2026年10月29日\"未检索到2026年10月29日盘中实时排行数据。候选池数据源连续第16个交易日故障，不编造候选池数据，本轮不开新仓(0只)，延续空仓观望。沪深300指数通过新浪财经(hq.sinajs.cn / sz399300)成功获取现价4036.770点（14:47:18），较昨收4083.870下跌约1.15%，已用于更新perf_history_short.json。",
-  "dataSource": "新浪财经(hq.sinajs.cn, list=sz399300)指数快照成功；成交额排行榜接口(新浪vip.stock.finance.sina.com.cn CONNECT 403被组织策略拒绝)失败，同花顺d.10jqka.com.cn持续502，东方财富push2.eastmoney.com按指引未重试，WebSearch未检索到当日排行数据，候选池筛选未执行"
+  "lastRunAt": "2026-10-30T06:52:00Z",
+  "lastRunNote": "14:52交易任务：当前持仓为空（上轮10-09已全部清仓），本轮无T+1到期仓位需处理，可用现金100%。候选池环节：新浪财经成交额排行榜接口(vip.stock.finance.sina.com.cn)CONNECT隧道仍被组织出口策略拒绝(403，已通过代理状态接口确认为policy denial)；同花顺q.10jqka.com.cn连接失败，d.10jqka.com.cn排行榜接口仍为502网关错误；东方财富push2.eastmoney.com按既定指引不再重试；WebSearch查询\"今日A股成交额排行榜 2026年10月30日\"未检索到2026年10月30日盘中实时排行数据。候选池数据源连续第17个交易日故障，不编造候选池数据，本轮不开新仓(0只)，延续空仓观望。沪深300指数通过新浪财经(hq.sinajs.cn / sz399300)成功获取现价3991.699点（14:47:33），较昨收4036.770下跌约1.12%，已用于更新perf_history_short.json。",
+  "dataSource": "新浪财经(hq.sinajs.cn, list=sz399300)指数快照成功；成交额排行榜接口(新浪vip.stock.finance.sina.com.cn CONNECT 403被组织策略拒绝)失败，同花顺q.10jqka.com.cn连接失败/d.10jqka.com.cn持续502，东方财富push2.eastmoney.com按指引未重试，WebSearch未检索到当日排行数据，候选池筛选未执行"
 }
