@@ -1,5 +1,5 @@
 {
-  "lastRunAt": "2026-11-05T06:50:00Z",
-  "lastRunNote": "14:50交易任务：当前持仓为空（上轮11-04已清仓贵州茅台），无T+1到期仓位需处理，可用现金100%。候选池环节：新浪vip.stock.finance.sina.com.cn成交额排行榜接口经代理状态接口确认为connect_rejected（组织出口策略拒绝）；同花顺q.10jqka.com.cn无法建立连接，d.10jqka.com.cn对应排行榜路径返回404；东方财富push2.eastmoney.com按既定指引不再重试；WebSearch三次查询（成交额排行榜/涨幅榜/午后个股新闻）均未检索到2026年11月5日当日盘中实时排行或个股数据。候选池数据源连续第21个交易日故障，不编造候选池数据，本轮不开新仓(0只)，延续空仓观望。沪深300指数通过新浪财经(hq.sinajs.cn / sz399300)成功获取现价4110.167点（14:48:45），较昨收4007.351上涨约2.57%，已用于更新perf_history_short.json。",
-  "dataSource": "新浪财经(hq.sinajs.cn, list=sz399300)指数快照成功；成交额排行榜接口(新浪vip CONNECT被组织策略connect_rejected、同花顺q无法连接/d接口404、东财push2按指引未重试)全部失败，WebSearch三次查询均未检索到当日实时排行数据，候选池筛选未执行"
+  "lastRunAt": "2026-11-06T06:47:00Z",
+  "lastRunNote": "14:47交易任务：当前持仓为空（上轮11-04已清仓贵州茅台），无T+1到期仓位需处理，可用现金100%。候选池环节：新浪vip.stock.finance.sina.com.cn成交额排行榜接口经代理状态接口确认为403(policy denial)；同花顺q.10jqka.com.cn CONNECT隧道同样403被拒，d.10jqka.com.cn对应排行榜路径返回404；东方财富push2.eastmoney.com按既定指引不再重试；WebSearch查询\"今日A股成交额排行榜 2026年11月6日\"未检索到当日盘中实时排行数据（仅检索到非同日或非个股排行的无关结果）。候选池官方接口连续第22个交易日故障，不编造候选池数据，本轮不开新仓(0只)，延续空仓观望。沪深300指数通过新浪财经(hq.sinajs.cn / sz399300)成功获取现价4050.915点（14:46:06），较昨收4113.411下跌约1.52%，已用于更新perf_history_short.json。",
+  "dataSource": "新浪财经(hq.sinajs.cn, list=sz399300)指数快照成功；成交额排行榜接口(新浪vip.stock.finance.sina.com.cn CONNECT 403被组织策略拒绝、同花顺q.10jqka.com.cn CONNECT 403、d.10jqka.com.cn 404、东财push2.eastmoney.com按指引未重试)全部失败，WebSearch未检索到当日实时排行数据，候选池筛选未执行"
 }
