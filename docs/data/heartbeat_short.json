@@ -1,5 +1,5 @@
 {
-  "lastRunAt": "2026-11-19T06:49:00Z",
-  "lastRunNote": "14:49交易任务：当前空仓（上轮11-18已空仓），无到期持仓需处理。候选池环节：官方排行榜接口新浪vip.stock.finance.sina.com.cn(connect_rejected)、东方财富push2.eastmoney.com(502)、同花顺d.10jqka.com.cn(404)均失败；WebSearch多次查询2026-11-19当日成交额排行及午评快讯，因当日仍处盘中交易时段、同日报道尚未发布，均未检索到有效数据（结果多为11-16/11-17历史报道或2025年同期旧闻），判定候选池数据源不可用，不编造排行榜数据，本轮不开新仓（0只），维持空仓观望。沪深300指数经新浪hq.sinajs.cn(sz399300)获取现价3976.689点（14:48:42），较基准日(2026-10-08)收盘4308.569下跌约7.70%，已用于更新perf_history_short.json。",
-  "dataSource": "新浪财经hq.sinajs.cn(list=sz399300)指数快照成功；成交额排行榜接口(新浪vip.stock.finance.sina.com.cn connect_rejected, 东方财富push2.eastmoney.com 502, 同花顺d.10jqka.com.cn 404)均失败，WebSearch多次查询2026-11-19当日排行/午评均无同日数据，候选池判定为空"
+  "lastRunAt": "2026-11-20T06:53:00Z",
+  "lastRunNote": "14:52交易任务：上轮(11-19)空仓，无到期持仓需处理（T+1判断环节跳过）。候选池环节：官方排行榜接口新浪vip.stock.finance.sina.com.cn(CONNECT 403，被环境网络策略拒绝)、东方财富push2.eastmoney.com(按既往指引不再重试)均不可用；改用WebSearch获取2026-11-20午盘成交额前列个股（中际旭创100.29亿/新易盛97.47亿/长鑫科技59.86亿/宁德时代58.96亿/寒武纪53.95亿），经新浪hq.sinajs.cn实时行情逐一核实，均已较昨收下跌0.71%~3.34%（大盘沪指-1.4%左右、深成指/创业板跌逾2%、逾3000股下跌），全部剔除。转而核实银行板块：招商银行(+1.55%，贴近日内高点)、工商银行(+2.31%，板块涨幅最高)逆势走强、量价健康，建仓两只(45%/35%)，留20%现金。沪深300指数经hq.sinajs.cn(sz399300)获取现价3943.780点（14:51:48），已用于更新perf_history_short.json。",
+  "dataSource": "新浪财经hq.sinajs.cn(list=sz399300,sz300308,sz300502,sz300750,sh688256,sh601988,sh601398,sh601288,sh600036,sz002142)个股/指数快照成功；官方排行榜接口（新浪vip.stock.finance.sina.com.cn CONNECT 403、东方财富push2.eastmoney.com按指引不再重试）均不可用，候选池改用WebSearch获取午盘成交额前列个股+新浪实时行情交叉验证"
 }
